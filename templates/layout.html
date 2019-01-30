@@ -1,0 +1,78 @@
+{{ define "layout" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lako Poslati</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+
+    /* Pagination links */
+    .pagination a {
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color .3s;
+    }
+
+    /* Style the active/current link */
+    .pagination a.active {
+      background-color: dodgerblue;
+      color: white;
+    }
+
+    /* Add a grey background color on mouse-over */
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+
+    #idx-atf {
+        /* layout */
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* background */
+        /* background-color: #5b5b5b; */
+        background-image: url("../assets/img/background-photo-mobile-devices.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        /*background-origin: border-box;*/
+        background-attachment: fixed;
+        /* formatting */
+      }
+
+    #idx-atf > div {
+        height: 85vh;
+    }
+
+    .idx-center-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+  </style>
+  </head>
+  <body>
+
+    {{ template "navbar" . }}
+
+<section id="idx-atf">
+    <div class="container">
+
+      {{ template "content" . }}
+
+    </div> <!-- /container -->
+</section>
+
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+{{ end }}
