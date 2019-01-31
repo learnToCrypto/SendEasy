@@ -26,7 +26,7 @@ func main() {
 	mux.HandleFunc("/demand/post", postDemand)
 	mux.HandleFunc("/demand/read", readDemand)
 	// Find Shipping
-	mux.HandleFunc("/demand/list", demandList)
+	mux.HandleFunc("/demand/list/", demandList)
 	// forum
 	mux.HandleFunc("/forum", forum)
 	// about

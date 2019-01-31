@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/learnToCrypto/lakoposlati/data"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 // GET /demand/new
@@ -92,29 +94,43 @@ func postDemand(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-
 func demandList(writer http.ResponseWriter, request *http.Request) {
 	type Data struct {
 		Demand        data.Demand // Must be exported!
 		NumOfMessages int         // Must be exported!
+		NumofDemands  int
 	}
+
 	demands, err := data.Demands()
-	fmt.Println("Len(demands) = ", len(demands))
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
 	} else {
 		d := make([]Data, len(demands))
 		for i, v := range demands {
-			d[i] = Data{Demand: v, NumOfMessages: v.NumReplies()}
+			d[i] = Data{Demand: v, NumOfMessages: v.NumReplies(), NumofDemands: len(demands)}
 		}
-		_, err := session(writer, request)
-   //pagination
-	//	postsPerPage := 20
+		x := len(demands)
+		fmt.Println(request.URL.Path)
+		i, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
+		fmt.Println(i)
+		start := ((i - 1) * 10)
+		end := i * 10
+		if end > x {
+			end = (i-1)*10 + (x % 10)
+		}
 		if err != nil {
-			generateHTML(writer, d, "layout", "public.navbar", "demandList")
-
+			error_message(writer, request, "Cannot get demands")
 		} else {
-			generateHTML(writer, d, "layout", "private.navbar", "demandList")
+			_, err := session(writer, request)
+			if err != nil {
+				generateHTML(writer, d[start:end], "layout", "public.navbar", "demandList")
+			} else {
+				generateHTML(writer, d[start:end], "layout", "private.navbar", "demandList")
+			}
 		}
 	}
 }
+
+//    {{range $1}}
+//	 <input type="radio" name={{.Name}} value={{.Value}} {{if .IsDisabled}} disabled=true {{end}} {{if .IsChecked}}checked{{end}}> {{.Text}}
+//		{{end}}
