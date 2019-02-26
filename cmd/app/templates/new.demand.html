@@ -1,0 +1,17 @@
+{{ define "content" }}
+
+<form class="form-signin" role="form" action="/demand/create" method="post">
+  <h2 class="form-signin-heading">
+    <i class="fa fa-comments-o">
+      Lako Poslati
+    </i>
+  </h2>
+  <div class="lead">Make a shipping request</div>
+  <input id="name" type="text" name="object" class="form-control" placeholder="Object" required autofocus>
+  <input type="text" name="collection" class="form-control" placeholder="Collection place" required>
+  <input type="text" name="delivery" class="form-control" placeholder="Delivery place" required>
+  <input type="text" name="timeframe" class="form-control" placeholder="Delivery timeframe" required>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Get Quote</button>
+</form>
+
+{{ end }}
