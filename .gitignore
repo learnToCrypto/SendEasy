@@ -1,6 +1,27 @@
+# mac hidden files
 .DS_Store
+
+# log files
 *.log
-chitchat
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# security / ssl
+*.pem
+*.xxjson
+
+
+# Test binary, built with `go test -c`
+*.test
+_testmain.go
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
 
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
@@ -21,10 +42,7 @@ _cgo_defun.c
 _cgo_gotypes.go
 _cgo_export.*
 
-_testmain.go
 
-*.exe
-*.test
 *.prof
 
 # WebStorm
@@ -34,9 +52,6 @@ _testmain.go
 .idea/
 .idea/workspace.xml
 **/.idea/workspace.xml
-
-# mac hidden files
-.DS_Store
 
 #other
 node_modules/
@@ -49,8 +64,3 @@ builds/**/images/*
 *.mp4
 #*.png
 #*.jpeg
-
-# security / ssl
-*.pem
-*.xxjson
-
