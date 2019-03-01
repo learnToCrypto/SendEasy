@@ -6,13 +6,55 @@ import (
 	"github.com/learnToCrypto/lakoposlati/internal/platform/postgres"
 )
 
+//type User struct {
+//Id        int
+//Uuid      string
+//Name      string
+//Email     string
+//Password  string
+//CreatedAt time.Time
+//}
+
+// User respresents a registered user with email/password authentication  (see netlify/gotrue)
 type User struct {
-	Id        int
-	Uuid      string
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
+	Id   int    `json:"id" db:"id"`
+	Uuid string `json:"Uuid" db:"uuid"`
+
+	Name string
+	//NickName          string          username
+	FirstName string
+	LastName  string
+
+	Aud  string `json:"aud" db:"aud"`
+	Role string `json:"role" db:"role"`
+
+	Email       string     `json:"email" db:"email"`
+	Password    string     `json:"-" db:"encrypted_password"`
+	ConfirmedAt *time.Time `json:"confirmed_at,omitempty" db:"confirmed_at"`
+	InvitedAt   *time.Time `json:"invited_at,omitempty" db:"invited_at"`
+
+	ConfirmationToken  string     `json:"-" db:"confirmation_token"`
+	ConfirmationSentAt *time.Time `json:"confirmation_sent_at,omitempty" db:"confirmation_sent_at"`
+
+	RecoveryToken  string     `json:"-" db:"recovery_token"`
+	RecoverySentAt *time.Time `json:"recovery_sent_at,omitempty" db:"recovery_sent_at"`
+
+	EmailChangeToken  string     `json:"-" db:"email_change_token"`
+	EmailChange       string     `json:"new_email,omitempty" db:"email_change"`
+	EmailChangeSentAt *time.Time `json:"email_change_sent_at,omitempty" db:"email_change_sent_at"`
+
+	LastSignInAt *time.Time `json:"last_sign_in_at,omitempty" db:"last_sign_in_at"`
+
+	//used to store information (e.g., a user's support plan, security roles, or access control groups)
+	//that can impact a user's core functionality, such as how an application functions or what the user can access.
+	AppMetaData map[string]interface{} `json:"app_metadata" db:"raw_app_meta_data"`
+	//UserMetaData (RawData) used to store user attributes (e.g., user preferences) that do not impact a user's core functionality;
+	UserMetaData map[string]interface{} `json:"user_metadata" db:"raw_user_meta_data"`
+
+	IsAdmin bool `json:"-" db:"is_super_admin"`
+
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Create a new user, save user info into the database

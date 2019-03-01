@@ -14,7 +14,8 @@ var Db *sql.DB
 
 func init() {
 	var err error
-	Db, err = sql.Open("postgres", "dbname=gwp user=gwp password=gwp sslmode=disable host=localhost")
+	//Db, err = sql.Open("postgres", "dbname=gwp user=gwp password=gwp sslmode=disable host=localhost")
+	Db, err = sql.Open("postgres", "dbname=mydb user=myuser password=mypass sslmode=disable host=localhost")
 	if err != nil {
 		log.Fatal(err)
 		fmt.Println("error is here")

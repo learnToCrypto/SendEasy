@@ -13,6 +13,7 @@ import (
 // GET /demand/new
 // Show the new demand form page
 func NewDemand(writer http.ResponseWriter, request *http.Request) {
+	//fmt.Println("NewDemand")
 	_, err := session(writer, request)
 	if err != nil {
 		http.Redirect(writer, request, "/login", 302)
@@ -24,6 +25,7 @@ func NewDemand(writer http.ResponseWriter, request *http.Request) {
 // POST /
 // Create the demand (insert in database) / demand.go
 func CreateDemand(writer http.ResponseWriter, request *http.Request) {
+	//fmt.Println("CreateDemand")
 	sess, err := session(writer, request)
 	if err != nil {
 		http.Redirect(writer, request, "/login", 302)
@@ -41,16 +43,19 @@ func CreateDemand(writer http.ResponseWriter, request *http.Request) {
 		delivery := request.PostFormValue("delivery")
 		timeframe := request.PostFormValue("timeframe")
 		status := 0
-		if _, err := userD.CreateDemand(object, collection, delivery, timeframe, status); err != nil {
+		if object == "" || collection == "" || delivery == "" || timeframe == "" {
+			error_message(writer, request, "Cannot create demand - not all fields filled")
+		} else if _, err := userD.CreateDemand(object, collection, delivery, timeframe, status); err != nil {
 			logger.Danger(err, "Cannot create demand")
 		}
-		http.Redirect(writer, request, "/demand/list", 302)
+		http.Redirect(writer, request, "/demand/list/1", 302) // change /1 with proper pagination, last demands first
 	}
 }
 
 // GET /demand/read
 // Show the details of the thread, including the posts and the form to write a post
 func ReadDemand(writer http.ResponseWriter, request *http.Request) {
+	//fmt.Println("ReadDemand")
 	vals := request.URL.Query()
 	uuid := vals.Get("id")
 	demand, err := user.DemandByUUID(uuid)
@@ -67,8 +72,10 @@ func ReadDemand(writer http.ResponseWriter, request *http.Request) {
 }
 
 // POST /demand/post
-// Create the demand
+// Create the demand message
+//ToDO Refact name of this func to PostMessage
 func PostDemand(writer http.ResponseWriter, request *http.Request) {
+	//fmt.Println("PostDemand")
 	sess, err := session(writer, request)
 	if err != nil {
 		http.Redirect(writer, request, "/login", 302)
@@ -102,7 +109,6 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		NumOfMessages int         // Must be exported!
 		NumofDemands  int
 	}
-
 	demands, err := user.Demands()
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
@@ -112,9 +118,10 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 			d[i] = Data{Demand: v, NumOfMessages: v.NumReplies(), NumofDemands: len(demands)}
 		}
 		x := len(demands)
-		fmt.Println(request.URL.Path)
+		//fmt.Println("Number of demands:", x)
+		//fmt.Println(request.URL.Path)
 		i, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
-		fmt.Println(i)
+		//fmt.Println(i)
 		start := ((i - 1) * 10)
 		end := i * 10
 		if end > x {
