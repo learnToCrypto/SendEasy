@@ -46,7 +46,8 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	user, err := user.UserByEmail(request.PostFormValue("email"))
 	if err != nil {
-		logger.Danger(err, "Cannot find user")
+		http.Error(writer, "Cannot find user", http.StatusForbidden)
+		//logger.Danger(err, "Cannot find user")
 		http.Error(writer, "Username and/or password do not match", http.StatusForbidden)
 	}
 	if user.Password == postgres.Encrypt(request.PostFormValue("password")) {
@@ -74,8 +75,9 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 func Logout(writer http.ResponseWriter, request *http.Request) {
 	cookie, err := request.Cookie("_cookie")
 	if err != http.ErrNoCookie {
-		logger.Warning(err, "Failed to get cookie")
+		//logger.Warning(err, "Failed to get cookie")
 		session := user.Session{Uuid: cookie.Value}
+		fmt.Println(session)
 		session.DeleteByUUID()
 	}
 	http.Redirect(writer, request, "/", 302)

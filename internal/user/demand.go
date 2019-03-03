@@ -17,6 +17,14 @@ type Demand struct {
 	UserId     int
 	CreatedAt  time.Time
 	Status     int // if 0 active, 1 success, 2 cancelled
+
+	Length     string //m
+	Width      string
+	Height     string
+	Weight     string //kg
+	Desciption string
+	DateListed time.Time
+	Expires    time.Time
 }
 
 type Message struct {

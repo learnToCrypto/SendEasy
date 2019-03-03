@@ -104,19 +104,23 @@ func PostDemand(writer http.ResponseWriter, request *http.Request) {
 }
 
 func DemandList(writer http.ResponseWriter, request *http.Request) {
+
 	type Data struct {
-		Demand        user.Demand // Must be exported!
-		NumOfMessages int         // Must be exported!
-		NumofDemands  int
+		Demands []user.Demand  // Must be exported!
+		MsgNum  map[string]int // Must be exported!
+		DmnNum  int
+		Current int
+		First   int
+		Last    int
 	}
+
+	//	funcMap := template.FuncMap{
+	//	"title": strings.Title,
+	//}
 	demands, err := user.Demands()
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
 	} else {
-		d := make([]Data, len(demands))
-		for i, v := range demands {
-			d[i] = Data{Demand: v, NumOfMessages: v.NumReplies(), NumofDemands: len(demands)}
-		}
 		x := len(demands)
 		//fmt.Println("Number of demands:", x)
 		//fmt.Println(request.URL.Path)
@@ -127,14 +131,27 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		if end > x {
 			end = (i-1)*10 + (x % 10)
 		}
+
+		m := make(map[string]int)
+		for _, v := range demands {
+			m[v.Uuid] = v.NumReplies()
+		}
+		d := Data{
+			Demands: demands,
+			MsgNum:  m,
+			DmnNum:  len(demands),
+			Current: i,
+			First:   start,
+			Last:    end,
+		}
 		if err != nil {
 			error_message(writer, request, "Cannot get demands")
 		} else {
 			_, err := session(writer, request)
 			if err != nil {
-				generateHTML(writer, d[start:end], "layout", "public.navbar", "demandList")
+				generateHTML(writer, d, "layout", "public.navbar", "demandList")
 			} else {
-				generateHTML(writer, d[start:end], "layout", "private.navbar", "demandList")
+				generateHTML(writer, d, "layout", "private.navbar", "demandList")
 			}
 		}
 	}

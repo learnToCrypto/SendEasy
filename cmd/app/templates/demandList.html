@@ -14,23 +14,22 @@
          </tr>
         </thead>
         <tbody>
-        {{range .}}
+        {{range .Demands}}
        <tr>
-          <td>{{ .Demand.Object }}</td>
-          <td>{{ .Demand.Collection }}</td>
-          <td>{{ .Demand.Delivery }}</td>
-          <td>{{ .Demand.Timeframe }}</td>
-          <td>{{ .Demand.CreatedAt }}</td>
-          <td> <a href="/demand/read?id={{.Demand.Uuid }}">  {{ .NumOfMessages }}</a> </td>
+          <td>{{ .Object }}</td>
+          <td>{{ .Collection }}</td>
+          <td>{{ .Delivery }}</td>
+          <td>{{ .Timeframe }}</td>
+          <td>{{ .CreatedAt }}</td>
+           <td> <a href="/demand/read?id={{.Uuid }}"> {{ .Uuid }}</a> </td>
         </tr>
-           {{ end }}
+        {{ end }}
         </tbody>
         </table>
 
-
         <div class="pagination">
 
-          <a href="#">&laquo;</a>
+          <a href="1">&laquo;</a>
           <a class="active" href="1">1</a>
           <a href="2">2</a>
 
