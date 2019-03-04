@@ -98,64 +98,89 @@ func PostDemand(writer http.ResponseWriter, request *http.Request) {
 			logger.Danger(err, "Cannot create message")
 		}
 		url := fmt.Sprint("/demand/read?id=", uuid)
-		fmt.Println(url)
+		//fmt.Println(url)
 		http.Redirect(writer, request, url, 302)
 	}
 }
+
+//func isNumeric(s string) bool {
+//_, err := strconv.ParseInt(s, 10, 64)
+//return err == nil
+//}
 
 func DemandList(writer http.ResponseWriter, request *http.Request) {
 
 	type Data struct {
 		Demands []user.Demand  // Must be exported!
 		MsgNum  map[string]int // Must be exported!
-		DmnNum  int
+		PageNum int
 		Current int
-		First   int
-		Last    int
 	}
 
-	//	funcMap := template.FuncMap{
-	//	"title": strings.Title,
-	//}
-	demands, err := user.Demands()
+	var limit int = 10
+
+	//parse request and obtain offset
+	i, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
+	if err != nil {
+		error_message(writer, request, "Cannot parse request")
+		return
+	}
+	offset := (i - 1) * 10
+
+	// retrieve demands; limit specifies size of a list
+	demands, err := user.Demands(limit, offset)
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
-	} else {
-		x := len(demands)
-		//fmt.Println("Number of demands:", x)
-		//fmt.Println(request.URL.Path)
-		i, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
-		//fmt.Println(i)
-		start := ((i - 1) * 10)
-		end := i * 10
-		if end > x {
-			end = (i-1)*10 + (x % 10)
-		}
-
-		m := make(map[string]int)
-		for _, v := range demands {
-			m[v.Uuid] = v.NumReplies()
-		}
-		d := Data{
-			Demands: demands,
-			MsgNum:  m,
-			DmnNum:  len(demands),
-			Current: i,
-			First:   start,
-			Last:    end,
-		}
-		if err != nil {
-			error_message(writer, request, "Cannot get demands")
-		} else {
-			_, err := session(writer, request)
-			if err != nil {
-				generateHTML(writer, d, "layout", "public.navbar", "demandList")
-			} else {
-				generateHTML(writer, d, "layout", "private.navbar", "demandList")
-			}
-		}
+		return
 	}
+
+	// m contains number of offers
+	m := make(map[string]int)
+	for _, v := range demands {
+		m[v.Uuid] = v.NumReplies()
+	}
+	// number of demands in database
+	x, err := user.DemandsNum()
+	if err != nil {
+		error_message(writer, request, "Cannot retrieve a list of demands")
+		return
+	}
+
+	//fmt.Println("number of all rows: ", x)
+	//fmt.Println("passed url: ", i)
+
+	d := Data{
+		Demands: demands,
+		MsgNum:  m,
+		PageNum: x % limit, // number of demands mod limit
+		Current: i,
+	}
+	_, err = session(writer, request)
+	if err != nil {
+		generateHTML(writer, d, "layout", "public.navbar", "demandList")
+	} else {
+		generateHTML(writer, d, "layout", "private.navbar", "demandList")
+	}
+
 }
+
+//funcMap := template.FuncMap{
+//"Iterate": func(count *uint) []uint {
+//	var i uint
+//	var Items []uint
+//	for i = 0; i < (*count); i++ {
+//	Items = append(Items, i)
+//	}
+//	return Items
+//},
+//}
+// {{if $val == .Current}}
+//<a class="active"</a>
+//{{end}}
+
+//	funcMap := template.FuncMap{
+//	"title": strings.Title,
+//}
 
 //    {{range $1}}
 //	 <input type="radio" name={{.Name}} value={{.Value}} {{if .IsDisabled}} disabled=true {{end}} {{if .IsChecked}}checked{{end}}> {{.Text}}

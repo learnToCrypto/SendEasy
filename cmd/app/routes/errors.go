@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 )
 
 // GET /err?msg=
@@ -14,4 +15,9 @@ func Err(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		generateHTML(writer, vals.Get("msg"), "layout", "private.navbar", "error")
 	}
+}
+
+func error_message(writer http.ResponseWriter, request *http.Request, msg string) {
+	url := []string{"/err?msg=", msg}
+	http.Redirect(writer, request, strings.Join(url, ""), 302)
 }

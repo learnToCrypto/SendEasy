@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/learnToCrypto/lakoposlati/internal/platform/postgres"
@@ -121,8 +122,11 @@ func (demand *Demand) Messages() (messages []Message, err error) {
 }
 
 // Get all demands in the database and returns it
-func Demands() (demands []Demand, err error) {
-	rows, err := postgres.Db.Query("SELECT id, uuid, object, collection, delivery, timeframe, user_id, created_at, status FROM demands ORDER BY created_at DESC")
+func Demands(limit int, offset int) (demands []Demand, err error) {
+	//var stm string
+	//stm =
+	//	fmt.Println(stm)
+	rows, err := postgres.Db.Query("SELECT id, uuid, object, collection, delivery, timeframe, user_id, created_at, status FROM demands ORDER BY created_at DESC LIMIT " + strconv.Itoa(limit) + "OFFSET " + strconv.Itoa(offset))
 	if err != nil {
 		return
 	}
@@ -135,6 +139,20 @@ func Demands() (demands []Demand, err error) {
 	}
 	rows.Close()
 	return
+}
+
+func DemandsNum() (count int, err error) {
+	rows, err := postgres.Db.Query("SELECT count(*) FROM demands")
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		if err = rows.Scan(&count); err != nil {
+			return
+		}
+	}
+	rows.Close()
+	return count, err
 }
 
 // Get a demand by the UUID

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/learnToCrypto/lakoposlati/internal/logger"
@@ -61,7 +60,7 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 			HttpOnly: true,
 		}
 		http.SetCookie(writer, &cookie)
-		fmt.Println(user, "is logged in")
+		//fmt.Println(user, "is logged in")
 		http.Redirect(writer, request, "/", 302)
 	} else {
 		http.Error(writer, "Username and/or password do not match 2", http.StatusForbidden)
@@ -77,7 +76,7 @@ func Logout(writer http.ResponseWriter, request *http.Request) {
 	if err != http.ErrNoCookie {
 		//logger.Warning(err, "Failed to get cookie")
 		session := user.Session{Uuid: cookie.Value}
-		fmt.Println(session)
+		//fmt.Println(session)
 		session.DeleteByUUID()
 	}
 	http.Redirect(writer, request, "/", 302)

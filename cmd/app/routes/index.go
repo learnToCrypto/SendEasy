@@ -1,13 +1,11 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func Index(writer http.ResponseWriter, request *http.Request) {
 	_, err := session(writer, request)
-	fmt.Println("ovde2")
 	if err != nil {
 		generateHTML(writer, nil, "layout", "public.navbar", "index")
 	} else {
