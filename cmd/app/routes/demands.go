@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/learnToCrypto/lakoposlati/internal/logger"
+	"github.com/learnToCrypto/lakoposlati/internal/pagination"
 	"github.com/learnToCrypto/lakoposlati/internal/user"
 )
 
@@ -108,15 +109,12 @@ func PostDemand(writer http.ResponseWriter, request *http.Request) {
 func DemandList(writer http.ResponseWriter, request *http.Request) {
 
 	type Data struct {
-		Demands []user.Demand  // Must be exported!
-		MsgNum  map[string]int // Must be exported!
-
-		PageNum  int
-		Current  int
-		PageLink []int // page links around current
+		Demands   []user.Demand  // Must be exported!
+		MsgNum    map[string]int // Must be exported!
+		Paginator pagination.Paginator
 	}
 
-	var limit int = 5
+	var limit int = 8
 
 	//parse request and obtain offset
 	u, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
@@ -124,6 +122,7 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		error_message(writer, request, "Cannot parse request")
 		return
 	}
+	//offset calculation
 	offset := (u - 1) * limit
 
 	// retrieve demands; limit specifies size of a list
@@ -131,6 +130,30 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
 		return
+	}
+
+	// number of demands in database
+	x, err := user.DemandsNum()
+	if err != nil {
+		error_message(writer, request, "Cannot retrieve a list of demands")
+		return
+	}
+
+	// m contains number of offers
+	m := make(map[string]int)
+	for _, v := range demands {
+		m[v.Uuid] = v.NumReplies()
+	}
+
+	//paginator : total number of pages calculated using PageNum
+	p := pagination.NewPaginator(limit, u, pagination.PageNum(x, limit))
+	// generate a slice of int containing page links
+	p.GeneratePageLink()
+
+	d := Data{
+		Demands:   demands,
+		MsgNum:    m,
+		Paginator: *p,
 	}
 
 	funcMap := template.FuncMap{
@@ -142,58 +165,6 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		},
 	}
 
-	// m contains number of offers
-	m := make(map[string]int)
-	for _, v := range demands {
-		m[v.Uuid] = v.NumReplies()
-	}
-	// number of demands in database
-	x, err := user.DemandsNum()
-	if err != nil {
-		error_message(writer, request, "Cannot retrieve a list of demands")
-		return
-	}
-	// number of pages
-	var pgn int
-	if (x % limit) == 0 {
-		pgn = x / limit
-	} else {
-		pgn = x/limit + 1
-	}
-
-	// Logic
-	var pl []int
-	switch {
-	case pgn < 11:
-		for i := 1; i <= pgn; i++ {
-			pl = append(pl, i)
-		}
-	case pgn >= 11 && u < 7:
-		for i := 1; i <= 10; i++ {
-			pl = append(pl, i)
-		}
-	case pgn >= 11 && u > 7 && u+4 > pgn:
-		for i := pgn - 10; i <= pgn; i++ {
-			pl = append(pl, i)
-		}
-	default:
-		for i := u - 5; i <= u+4; i++ {
-			pl = append(pl, i)
-		}
-	}
-
-	//fmt.Println("number of all rows: ", x)
-	//fmt.Println("passed url: ", u)
-	//fmt.Println("offset, limit, pl: ", offset, limit, pl)
-	//fmt.Println("number of pages:", pgn)
-	d := Data{
-		Demands:  demands,
-		MsgNum:   m,
-		PageNum:  pgn, // number of pages
-		Current:  u,
-		PageLink: pl,
-	}
-	//fmt.Println("map: ", m)
 	_, err = session(writer, request)
 	if err != nil {
 		generateHTMLwithFunc(writer, d, funcMap, "layout", "public.navbar", "demandList")
@@ -202,23 +173,3 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 	}
 
 }
-
-//funcMap := template.FuncMap{
-//"Iterate": func(count *uint) []uint {
-//	var i uint
-//	var Items []uint
-//	for i = 0; i < (*count); i++ {
-//	Items = append(Items, i)
-//	}
-//	return Items
-//},
-//}
-// {{if $val == .Current}}
-//<a class="active"</a>
-//{{end}}
-
-//
-
-//    {{range $1}}
-//	 <input type="radio" name={{.Name}} value={{.Value}} {{if .IsDisabled}} disabled=true {{end}} {{if .IsChecked}}checked{{end}}> {{.Text}}
-//		{{end}}

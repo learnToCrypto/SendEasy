@@ -34,13 +34,13 @@
           <li>
           <a href="1">First </a>
           </li>
-          {{range $val := .PageLink}}
+          {{range $val := .Paginator.PageLink}}
           <li>
-            <a {{if eq $val $.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
+            <a {{if eq $val $.Paginator.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
           </li>
           {{end}}
           <li>
-          <a href="{{.PageNum}}"> Last</a>
+          <a href="{{.Paginator.PageNum}}"> Last</a>
           </li>
         </div>
 </div>
