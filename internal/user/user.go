@@ -70,7 +70,7 @@ func (user *User) Create() (err error) {
 	defer stmt.Close()
 
 	// use QueryRow to return a row and scan the returned id into the User struct
-	err = stmt.QueryRow(postgres.CreateUUID(), user.Name, user.Email, postgres.Encrypt(user.Password), time.Now()).Scan(&user.Id, &user.Uuid, &user.CreatedAt)
+	err = stmt.QueryRow(postgres.CreateUUID(), user.Name, user.Email, postgres.Encrypt(user.Password), time.Now().UTC()).Scan(&user.Id, &user.Uuid, &user.CreatedAt)
 	return
 }
 

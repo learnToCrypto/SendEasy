@@ -10,7 +10,7 @@
             <th>Delivery</th>
             <th>Timeframe</th>
            <th>Created</th>
-           <th>See Quotes</th>
+           <th>See Offers</th>
          </tr>
         </thead>
         <tbody>
@@ -20,22 +20,29 @@
           <td>{{ .Collection }}</td>
           <td>{{ .Delivery }}</td>
           <td>{{ .Timeframe }}</td>
-          <td>{{ .CreatedAt }}</td>
-           <td> <a href="/demand/read?id={{.Uuid }}"> {{ .Uuid }}</a> </td>
+          <td>{{ FormatTime .CreatedAt }}</td>
+           <td> <a href="/demand/read?id={{.Uuid }}">{{index $.MsgNum .Uuid}}</a> </td>
         </tr>
         {{ end }}
         </tbody>
         </table>
+      </span>
+      </div>
 
+<div class="center">
         <div class="pagination">
-
-          <a href="1">&laquo;</a>
-          <a class="active" href="1">1</a>
-          <a href="2">2</a>
-
-          <a href="#">&raquo;</a>
+          <li>
+          <a href="1">First </a>
+          </li>
+          {{range $val := .PageLink}}
+          <li>
+            <a {{if eq $val $.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
+          </li>
+          {{end}}
+          <li>
+          <a href="{{.PageNum}}"> Last</a>
+          </li>
         </div>
+</div>
 
-     </span>
-  </div>
 {{ end }}

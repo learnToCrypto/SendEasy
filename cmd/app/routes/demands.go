@@ -2,9 +2,11 @@ package routes
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/learnToCrypto/lakoposlati/internal/logger"
 	"github.com/learnToCrypto/lakoposlati/internal/user"
@@ -103,35 +105,41 @@ func PostDemand(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-//func isNumeric(s string) bool {
-//_, err := strconv.ParseInt(s, 10, 64)
-//return err == nil
-//}
-
 func DemandList(writer http.ResponseWriter, request *http.Request) {
 
 	type Data struct {
 		Demands []user.Demand  // Must be exported!
 		MsgNum  map[string]int // Must be exported!
-		PageNum int
-		Current int
+
+		PageNum  int
+		Current  int
+		PageLink []int // page links around current
 	}
 
-	var limit int = 10
+	var limit int = 5
 
 	//parse request and obtain offset
-	i, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
+	u, err := strconv.Atoi(strings.TrimPrefix(request.URL.Path, "/demand/list/"))
 	if err != nil {
 		error_message(writer, request, "Cannot parse request")
 		return
 	}
-	offset := (i - 1) * 10
+	offset := (u - 1) * limit
 
 	// retrieve demands; limit specifies size of a list
 	demands, err := user.Demands(limit, offset)
 	if err != nil {
 		error_message(writer, request, "Cannot get demands")
 		return
+	}
+
+	funcMap := template.FuncMap{
+		"FormatTime": func(t time.Time) string {
+			tn := time.Now().Local()
+			th := t.Local()
+			diff := tn.Sub(th)
+			return humanizeDuration(diff)
+		},
 	}
 
 	// m contains number of offers
@@ -145,21 +153,52 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		error_message(writer, request, "Cannot retrieve a list of demands")
 		return
 	}
+	// number of pages
+	var pgn int
+	if (x % limit) == 0 {
+		pgn = x / limit
+	} else {
+		pgn = x/limit + 1
+	}
+
+	// Logic
+	var pl []int
+	switch {
+	case pgn < 11:
+		for i := 1; i <= pgn; i++ {
+			pl = append(pl, i)
+		}
+	case pgn >= 11 && u < 7:
+		for i := 1; i <= 10; i++ {
+			pl = append(pl, i)
+		}
+	case pgn >= 11 && u > 7 && u+4 > pgn:
+		for i := pgn - 10; i <= pgn; i++ {
+			pl = append(pl, i)
+		}
+	default:
+		for i := u - 5; i <= u+4; i++ {
+			pl = append(pl, i)
+		}
+	}
 
 	//fmt.Println("number of all rows: ", x)
-	//fmt.Println("passed url: ", i)
-
+	//fmt.Println("passed url: ", u)
+	//fmt.Println("offset, limit, pl: ", offset, limit, pl)
+	//fmt.Println("number of pages:", pgn)
 	d := Data{
-		Demands: demands,
-		MsgNum:  m,
-		PageNum: x % limit, // number of demands mod limit
-		Current: i,
+		Demands:  demands,
+		MsgNum:   m,
+		PageNum:  pgn, // number of pages
+		Current:  u,
+		PageLink: pl,
 	}
+	//fmt.Println("map: ", m)
 	_, err = session(writer, request)
 	if err != nil {
-		generateHTML(writer, d, "layout", "public.navbar", "demandList")
+		generateHTMLwithFunc(writer, d, funcMap, "layout", "public.navbar", "demandList")
 	} else {
-		generateHTML(writer, d, "layout", "private.navbar", "demandList")
+		generateHTMLwithFunc(writer, d, funcMap, "layout", "private.navbar", "demandList")
 	}
 
 }
@@ -178,9 +217,7 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 //<a class="active"</a>
 //{{end}}
 
-//	funcMap := template.FuncMap{
-//	"title": strings.Title,
-//}
+//
 
 //    {{range $1}}
 //	 <input type="radio" name={{.Name}} value={{.Value}} {{if .IsDisabled}} disabled=true {{end}} {{if .IsChecked}}checked{{end}}> {{.Text}}

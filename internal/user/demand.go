@@ -46,7 +46,7 @@ func (user *User) CreateDemand(object, collection, delivery, timeframe string, s
 	}
 	defer stmt.Close()
 	// use QueryRow to return a row and scan the returned id into the Session struct
-	err = stmt.QueryRow(postgres.CreateUUID(), object, collection, delivery, timeframe, user.Id, time.Now(), status).Scan(&conv.Id, &conv.Uuid, &conv.Object, &conv.Collection, &conv.Delivery, &conv.Timeframe, &conv.UserId, &conv.CreatedAt, &conv.Status)
+	err = stmt.QueryRow(postgres.CreateUUID(), object, collection, delivery, timeframe, user.Id, time.Now().UTC(), status).Scan(&conv.Id, &conv.Uuid, &conv.Object, &conv.Collection, &conv.Delivery, &conv.Timeframe, &conv.UserId, &conv.CreatedAt, &conv.Status)
 	return
 }
 
@@ -67,7 +67,7 @@ func (user *User) CreateMessage(conv Demand, body string) (msg Message, err erro
 	}
 	defer stmt.Close()
 	// use QueryRow to return a row and scan the returned id into the Session struct
-	err = stmt.QueryRow(postgres.CreateUUID(), body, user.Id, conv.Id, time.Now()).Scan(&msg.Id, &msg.Uuid, &msg.Body, &msg.UserId, &msg.DemandId, &msg.CreatedAt)
+	err = stmt.QueryRow(postgres.CreateUUID(), body, user.Id, conv.Id, time.Now().UTC()).Scan(&msg.Id, &msg.Uuid, &msg.Body, &msg.UserId, &msg.DemandId, &msg.CreatedAt)
 	return
 }
 
