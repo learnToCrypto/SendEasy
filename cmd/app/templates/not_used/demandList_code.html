@@ -1,0 +1,79 @@
+<div class="center">
+        <div class="pagination">
+          <li>
+          <a href="1">First </a>
+          </li>
+          {{range $val := .PageLink}}
+          <li>
+            <a {{if eq $val $.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
+          </li>
+          {{end}}
+          <li>
+          <a href="{{.PageNum}}"> Last</a>
+          </li>
+        </div>
+</div>
+
+
+<a href="Previous">❮</a>
+ <a href="Next">❯</a>
+
+
+<iframe
+  width="600"
+  height="450"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAH1NthiSEsA7Cf29tjii-1kZ4_BdBDLFI&origin={{.Collection}}&destination={{.Delivery}}" allowfullscreen>
+</iframe>
+
+
+<div class="pagination">
+  <a href="1">&laquo;</a>
+  {{range $val := .PageLink}}
+
+  <li>
+    <a {{if eq $val $.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
+  </li>
+
+  {{end}}
+  <a href="{{.PageNum}}">&raquo;</a>
+</div>
+
+
+  <input type="radio" name="agreement" value="accepted">
+<!--
+{{ else }}
+
+{{if (eq $val .Current)}}
+    <a href="{{$val}}">{{$val}}</a>
+{{else}}
+
+<a href="{{$val}}">{{$val}}</a>
+ -->
+
+  <a class="active" href="{{$val}}">{{$val}}</a>
+<!--
+        {{if .paginator.HasPages}}
+<ul class="pagination pagination">
+    {{if .paginator.HasPrev}}
+        <li><a href="{{.paginator.PageLinkFirst}}">{{ i18n .Lang "paginator.first_page"}}</a></li>
+        <li><a href="{{.paginator.PageLinkPrev}}">&laquo;</a></li>
+    {{else}}
+        <li class="disabled"><a>{{ i18n .Lang "paginator.first_page"}}</a></li>
+        <li class="disabled"><a>&laquo;</a></li>
+    {{end}}
+    {{range $index, $page := .paginator.Pages}}
+        <li{{if $.paginator.IsActive .}} class="active"{{end}}>
+            <a href="{{$.paginator.PageLink $page}}">{{$page}}</a>
+        </li>
+    {{end}}
+    {{if .paginator.HasNext}}
+        <li><a href="{{.paginator.PageLinkNext}}">&raquo;</a></li>
+        <li><a href="{{.paginator.PageLinkLast}}">{{ i18n .Lang "paginator.last_page"}}</a></li>
+    {{else}}
+        <li class="disabled"><a>&raquo;</a></li>
+        <li class="disabled"><a>{{ i18n .Lang "paginator.last_page"}}</a></li>
+    {{end}}
+</ul>
+{{end}}
+-->

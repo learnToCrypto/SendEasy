@@ -11,14 +11,23 @@ import (
 // GET /login
 // Show the login page
 func Login(writer http.ResponseWriter, request *http.Request) {
-	t := parseTemplateFiles("login.layout", "public.navbar", "login")
-	t.Execute(writer, nil)
+	generateHTML(writer, nil, "layout/login.base", "public/navbar", "login")
 }
 
 // GET /signup
 // Show the signup page
 func Signup(writer http.ResponseWriter, request *http.Request) {
-	generateHTML(writer, nil, "login.layout", "public.navbar", "signup")
+	if request.PostFormValue("user-type") == "customer" {
+		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/customer")
+	} else {
+		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/provider")
+	}
+}
+
+// GET /signup
+// Show the signup page
+func SignupChoice(writer http.ResponseWriter, request *http.Request) {
+	generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/choice")
 }
 
 // POST /signup
@@ -29,9 +38,11 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 		logger.Danger(err, "Cannot parse form")
 	}
 	user := user.User{
-		Name:     request.PostFormValue("name"),
-		Email:    request.PostFormValue("email"),
-		Password: request.PostFormValue("password"),
+		FirstName: request.PostFormValue("first_name"),
+		LastName:  request.PostFormValue("last_name"),
+		Name:      request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
+		Email:     request.PostFormValue("email"),
+		Password:  request.PostFormValue("password"),
 	}
 	if err := user.Create(); err != nil {
 		logger.Danger(err, "Cannot create user")

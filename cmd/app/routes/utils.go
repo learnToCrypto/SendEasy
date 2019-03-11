@@ -31,7 +31,7 @@ func session(writer http.ResponseWriter, request *http.Request) (sess user.Sessi
 // pass in a list of file names, and get a template
 func parseTemplateFiles(filenames ...string) (t *template.Template) {
 	var files []string
-	t = template.New("layout")
+	t = template.New("layout/base")
 	for _, file := range filenames {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
 	}
@@ -42,24 +42,24 @@ func parseTemplateFiles(filenames ...string) (t *template.Template) {
 func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.html", file))
+		files = append(files, fmt.Sprintf("templates/en/%s.html", file))
 	}
 
 	templates := template.Must(template.ParseFiles(files...))
-	templates.ExecuteTemplate(writer, "layout", data)
+	templates.ExecuteTemplate(writer, "layout/base", data)
 }
 
 func generateHTMLwithFunc(writer http.ResponseWriter, data interface{}, funcMap template.FuncMap, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.html", file))
+		files = append(files, fmt.Sprintf("templates/en/%s.html", file))
 	}
 
 	templates, err := template.New("myhtml").Funcs(funcMap).ParseFiles(files...)
 	if err != nil {
 		log.Fatalf("parsing: %s", err)
 	}
-	templates.ExecuteTemplate(writer, "layout", data)
+	templates.ExecuteTemplate(writer, "layout/base", data)
 }
 
 func humanizeDuration(duration time.Duration) string {

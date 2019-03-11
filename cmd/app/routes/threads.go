@@ -15,7 +15,7 @@ func NewThread(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Redirect(writer, request, "/login", 302)
 	} else {
-		generateHTML(writer, nil, "layout", "private.navbar", "new.thread")
+		generateHTML(writer, nil, "layout/base", "private/navbar", "new.thread")
 	}
 }
 
@@ -53,9 +53,9 @@ func ReadThread(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		_, err := session(writer, request)
 		if err != nil {
-			generateHTML(writer, &thread, "layout", "public.navbar", "public.thread")
+			generateHTML(writer, &thread, "layout/base", "public/navbar", "public/thread")
 		} else {
-			generateHTML(writer, &thread, "layout", "private.navbar", "private.thread")
+			generateHTML(writer, &thread, "layout/base", "private/navbar", "private/thread")
 		}
 	}
 }

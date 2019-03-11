@@ -1,0 +1,47 @@
+{{ define "navbar" }}
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">
+        <i class="fa fa-comments-o"></i>
+        Lako Poslati
+      </a>
+    </div>
+        <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/demand/new">Make a Demand</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="/demand/list/1">See Current Demands</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="/forum">Forum</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="/howitworks">How It Works</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+        <div class="dropdown">
+          <form action="/my_account">
+            <button type="submit" value="Go to my account" class="dropbtn"> {{ .Username }}</button>
+          </form>
+
+        <div class="dropdown-content">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="/logout">Logout</a>
+        </div>
+        </div>
+
+      </ul>
+    </div>
+  </div>
+</div>
+{{ end }}

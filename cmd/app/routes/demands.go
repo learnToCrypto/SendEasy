@@ -17,11 +17,21 @@ import (
 // Show the new demand form page
 func NewDemand(writer http.ResponseWriter, request *http.Request) {
 	//fmt.Println("NewDemand")
-	_, err := session(writer, request)
+	sess, err := session(writer, request)
 	if err != nil {
 		http.Redirect(writer, request, "/login", 302)
 	} else {
-		generateHTML(writer, nil, "layout", "private.navbar", "new.demand")
+
+		username, err := user.UsernamebySession(sess.UserId)
+		if err != nil {
+			username = "My Account"
+		}
+		d := struct {
+			Username string
+		}{
+			Username: username,
+		}
+		generateHTML(writer, d, "layout/base", "private/navbar", "new.demand")
 	}
 }
 
@@ -67,9 +77,9 @@ func ReadDemand(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		_, err := session(writer, request)
 		if err != nil {
-			generateHTML(writer, &demand, "layout", "public.navbar", "public.demand")
+			generateHTML(writer, &demand, "layout/base", "public/navbar", "public/demand")
 		} else {
-			generateHTML(writer, &demand, "layout", "private.navbar", "private.demand")
+			generateHTML(writer, &demand, "layout/base", "private/navbar", "private/demand")
 		}
 	}
 }
@@ -106,13 +116,8 @@ func PostDemand(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+//DemandList function provides a list of all demands together with pagination
 func DemandList(writer http.ResponseWriter, request *http.Request) {
-
-	type Data struct {
-		Demands   []user.Demand  // Must be exported!
-		MsgNum    map[string]int // Must be exported!
-		Paginator pagination.Paginator
-	}
 
 	var limit int = 8
 
@@ -150,12 +155,7 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 	// generate a slice of int containing page links
 	p.GeneratePageLink()
 
-	d := Data{
-		Demands:   demands,
-		MsgNum:    m,
-		Paginator: *p,
-	}
-
+	// funcMap defines a function called FormatTime that trans
 	funcMap := template.FuncMap{
 		"FormatTime": func(t time.Time) string {
 			tn := time.Now().Local()
@@ -165,11 +165,29 @@ func DemandList(writer http.ResponseWriter, request *http.Request) {
 		},
 	}
 
-	_, err = session(writer, request)
+	sess, err := session(writer, request)
+	//get username of active user
+	username, err := user.UsernamebySession(sess.UserId)
 	if err != nil {
-		generateHTMLwithFunc(writer, d, funcMap, "layout", "public.navbar", "demandList")
+		username = "My Account"
+	}
+
+	d := struct {
+		Demands   []user.Demand // Must be exported! is it?
+		MsgNum    map[string]int
+		Paginator pagination.Paginator
+		Username  string
+	}{
+		Demands:   demands,
+		MsgNum:    m,
+		Paginator: *p,
+		Username:  username,
+	}
+
+	if err != nil {
+		generateHTMLwithFunc(writer, d, funcMap, "layout/base", "public/navbar", "demandList")
 	} else {
-		generateHTMLwithFunc(writer, d, funcMap, "layout", "private.navbar", "demandList")
+		generateHTMLwithFunc(writer, d, funcMap, "layout/base", "private/navbar", "demandList")
 	}
 
 }

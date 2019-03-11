@@ -2,26 +2,44 @@ package routes
 
 import (
 	"net/http"
+
+	"github.com/learnToCrypto/lakoposlati/internal/user"
 )
 
 func Index(writer http.ResponseWriter, request *http.Request) {
-	_, err := session(writer, request)
+	sess, err := session(writer, request)
 	if err != nil {
-		generateHTML(writer, nil, "layout", "public.navbar", "index")
+		generateHTML(writer, nil, "layout/base", "public/navbar", "index")
 	} else {
-		generateHTML(writer, nil, "layout", "private.navbar", "index")
+		username, err := user.UsernamebySession(sess.UserId)
+		if err != nil {
+			username = "My Account"
+		}
+		d := struct {
+			Username string
+		}{
+			Username: username,
+		}
+		generateHTML(writer, d, "layout/base", "private/navbar", "index")
 	}
 
 }
 
-func About(writer http.ResponseWriter, request *http.Request) {
-	_, err := session(writer, request)
+func HowItWorks(writer http.ResponseWriter, request *http.Request) {
+	sess, err := session(writer, request)
 	if err != nil {
-		t := parseTemplateFiles("layout", "public.navbar", "about")
-		t.Execute(writer, nil)
+		generateHTML(writer, nil, "layout/base", "public/navbar", "howitworks")
 	} else {
-		t := parseTemplateFiles("layout", "private.navbar", "about")
-		t.Execute(writer, nil)
+		username, err := user.UsernamebySession(sess.UserId)
+		if err != nil {
+			username = "My Account"
+		}
+		d := struct {
+			Username string
+		}{
+			Username: username,
+		}
+		generateHTML(writer, d, "layout/base", "private/navbar", "howitworks")
 	}
 
 }

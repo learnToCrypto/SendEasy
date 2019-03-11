@@ -30,14 +30,14 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	// forum
 	mux.HandleFunc("/forum", Forum)
 	// about
-	mux.HandleFunc("/about", About)
+	mux.HandleFunc("/howitworks", HowItWorks)
 	// error
 	mux.HandleFunc("/err", Err)
 
 	// defined in route_auth.go
 	mux.HandleFunc("/login", Login)
 	mux.HandleFunc("/logout", Logout)
-	mux.HandleFunc("/join", Signup)
+	mux.HandleFunc("/join", SignupChoice)
 	mux.HandleFunc("/signup", Signup)
 	mux.HandleFunc("/signup_account", SignupAccount)
 	mux.HandleFunc("/authenticate", Authenticate)

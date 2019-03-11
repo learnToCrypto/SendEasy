@@ -1,0 +1,21 @@
+{{ define "content" }}
+
+<form class="form-signin" role="form" action="/signup_account" method="post">
+  <h2 class="form-signin-heading">
+    <i class="fa fa-comments-o">
+      Lako Poslati
+    </i>
+  </h2>
+  <div class="lead">Sign up for an account below</div>
+  <input id="name" type="text" name="first_name" class="form-control" placeholder="First Name" required autofocus>
+  <input id="name" type="text" name="last_name" class="form-control" placeholder="Last Name" required autofocus>
+  <input type="email" name="email" class="form-control" placeholder="Email address" required>
+  <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+  <p> <input type="checkbox" required name="terms"> I agree to the terms of Lako Poslati <a href="/about">User Agreement</a> and <a href="/about">Privacy Policy</a>.<br>
+
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+</form>
+
+
+By clicking "Sign Up", you accept the terms and conditions of the Lako Poslati User Agreement and Privacy Policy. By entering an email address and clicking "Sign Up" you agree to be contacted by Lako Poslati for site notifications, transactional emails and select Lako Poslati promotions. We do not sell, rent or share your email and you may opt out of all emails at any time.
+{{ end }}

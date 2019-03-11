@@ -13,9 +13,9 @@ func Forum(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		_, err := session(writer, request)
 		if err != nil {
-			generateHTML(writer, threads, "layout", "public.navbar", "forum")
+			generateHTML(writer, threads, "layout/base", "public/navbar", "forum")
 		} else {
-			generateHTML(writer, threads, "layout", "private.navbar", "forum")
+			generateHTML(writer, threads, "layout/base", "private/navbar", "forum")
 		}
 	}
 }
