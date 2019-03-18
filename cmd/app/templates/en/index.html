@@ -1,9 +1,57 @@
 {{ define "content" }}
-<p class="lead">
-  <a href="/demand/new">Make a Demand</a>
-</p>
 
-<p class="lead">
-  <a href="/demand/list/1">Find Shipments</a>
-</p>
+
+<div class="container">
+
+<div class="row">
+
+  <div class="col-md-4">
+
+      <br/>
+      <br/>
+      <div class="lead">Find a Shipping Provider on Ship</div>
+      
+
+    <form role="form" action="/demand/create/1" method="post">
+
+      <div class="form-group">
+        <label for="object">Item to ship</label>
+        <input id="object" type="text" name="obj" class="form-control" aria-describedby="itemHelp" placeholder="What do you want ship? (e.g. Bicycle)" required autofocus >
+        <small id="itemHelp" class="form-text text-muted">Please describe your item.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="loc">Pick up place</label>
+        <input  id="loc" type="text" name="src" class="form-control" placeholder="Item Location" required >
+      </div>
+
+      <div class="form-group">
+        <label for="dst">Drop off place</label>
+        <input  id="dst" type="text" name="dest" class="form-control" placeholder="Item Destination" required >
+      </div>
+
+      <br/>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Get an Offer</button>
+
+    </form>
+  </div>
+
+
+  <div class="col-md-8">
+      <br/>
+      <br/>
+      <div class="moj-image">
+      </div>
+  </div>
+
+  </div>
+</div>
+
 {{ end }}
+
+
+<!--
+          <input id="object" type="text" name="obj" class="form-control" placeholder="What do you want ship? (e.g. Bicycle)" required autofocus>
+          <input type="text" name="src" class="form-control" placeholder="Pickup Location" required >
+          <input type="text" name="dest" class="form-control" placeholder="Item Destination" required>
+-->

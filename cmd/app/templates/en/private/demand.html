@@ -3,12 +3,13 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="lead"> <i class="fa fa-comment-o"></i> {{ .Object }}  </span>
+    <span class="lead"> <i class="fa fa-comment-o"></i> {{ .Demand.Object }}  | {{ .Demand.Collection }} | {{ .Demand.Delivery }} | {{ .Demand.Timeframe }} | {{ .Demand.Status }}</span>
     <div class="pull-right">
-      Started by {{ .User.Name }} - {{ .CreatedAtDate }}
+      Started by {{ .Demand.UserId }} - {{ .Demand.CreatedAt }}
     </div>
 
   </div>
+
 
 
   {{ range .Messages }}
@@ -28,7 +29,7 @@
      <form role="form" action="/demand/post" method="post">
        <div class="form-group">
          <textarea class="form-control" name="body" id="body" placeholder="Write your reply here" rows="3"></textarea>
-         <input type="hidden" name="uuid" value="{{ .Uuid }}">
+         <input type="hidden" name="uuid" value="{{ .Demand.Uuid }}">
          <br/>
          <button class="btn btn-primary pull-right" type="submit">Reply</button>
        </div>

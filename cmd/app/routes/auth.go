@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/learnToCrypto/lakoposlati/internal/logger"
 	"github.com/learnToCrypto/lakoposlati/internal/platform/postgres"
+	"github.com/learnToCrypto/lakoposlati/internal/sessions"
 	"github.com/learnToCrypto/lakoposlati/internal/user"
 )
 
@@ -57,18 +59,18 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 	user, err := user.UserByEmail(request.PostFormValue("email"))
 	if err != nil {
 		http.Error(writer, "Cannot find user", http.StatusForbidden)
-		//logger.Danger(err, "Cannot find user")
-		http.Error(writer, "Username and/or password do not match", http.StatusForbidden)
 	}
 	if user.Password == postgres.Encrypt(request.PostFormValue("password")) {
-		session, err := user.CreateSession()
+		sess, err := sessions.CreateSession(&user)
 		if err != nil {
 			logger.Danger(err, "Cannot create session")
 		}
 		cookie := http.Cookie{
 			Name:     "_cookie",
-			Value:    session.Uuid,
+			Value:    sess.Uuid,
 			HttpOnly: true,
+			Path:     "/",
+			MaxAge:   120, // in sec    3600 * 8   is 8 hours
 		}
 		http.SetCookie(writer, &cookie)
 		//fmt.Println(user, "is logged in")
@@ -84,11 +86,13 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 // Logs the user out
 func Logout(writer http.ResponseWriter, request *http.Request) {
 	cookie, err := request.Cookie("_cookie")
+	fmt.Println("_cookie to delete:", cookie)
 	if err != http.ErrNoCookie {
 		//logger.Warning(err, "Failed to get cookie")
-		session := user.Session{Uuid: cookie.Value}
-		//fmt.Println(session)
-		session.DeleteByUUID()
+		session := sessions.Session{Uuid: cookie.Value}
+		fmt.Println("session to delete in logout:", session)
+		err := session.DeleteByUUID()
+		fmt.Println("err in deleting session in logout:", err)
 	}
 	http.Redirect(writer, request, "/", 302)
 }

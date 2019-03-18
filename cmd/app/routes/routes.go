@@ -12,7 +12,6 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	mux := http.NewServeMux()
 	files := http.FileServer(http.Dir(conf.Static))
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
-
 	//
 	// all route patterns matched here
 	// route handler functions defined in other files
@@ -22,7 +21,9 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	mux.HandleFunc("/", Index)
 	// defined in route_qoute.go
 	mux.HandleFunc("/demand/new", NewDemand)
-	mux.HandleFunc("/demand/create", CreateDemand)
+	mux.HandleFunc("/demand/create/1", CreateDemand1)
+	mux.HandleFunc("/demand/create/2", CreateDemandPriv)
+	mux.HandleFunc("/demand/create/3", CreateDemandPub)
 	mux.HandleFunc("/demand/post", PostDemand)
 	mux.HandleFunc("/demand/read", ReadDemand)
 	// Find Shipping

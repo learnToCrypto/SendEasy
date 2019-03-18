@@ -1,0 +1,66 @@
+{{ define "content" }}
+
+
+  <form role="form" action="/demand/create/2" method="post">
+
+
+      <div class="row">
+        <div class="lead">Complete Demand</div>
+        <div class="col-sm-4">
+          <label for="object">Item</label> </br>
+          <input id="object" type="text" name="obj" readonly class="form-control-plaintext" value={{.Object}}>
+        </div>
+
+
+        <div class="col-sm-4">
+          <label for="loc">Pick up</label> </br>
+          <input  id="loc" type="text" name="src" readonly class="form-control-plaintext" value="{{.Location}}" >
+        </div>
+
+
+        <div class="col-sm-4">
+        <label for="dst">Drop off</label> </br>
+        <input  id="dst" type="text" name="dest" readonly class="form-control-plaintext" value="{{.Destination}}" >
+        </div>
+
+      </div>
+
+      </br>
+
+      <div class="row">
+        <div class="lead">Timeframe</div>
+
+        <div class="col-sm-4">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="timeframe" id="inlineRadio1" value="Urgent">
+            <label class="form-check-label" for="inlineRadio1">Urgent</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="timeframe" id="inlineRadio2" value="1 week">
+            <label class="form-check-label" for="inlineRadio2">1 week</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="timeframe" id="inlineRadio3" value="2 weeks">
+            <label class="form-check-label" for="inlineRadio3">2 weeks</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="timeframe" id="inlineRadio4" value="1 month" >
+            <label class="form-check-label" for="inlineRadio4">1 month </label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="timeframe" id="inlineRadio5" value="Flexible" >
+            <label class="form-check-label" for="inlineRadio5">Flexible </label>
+          </div>
+        </div>
+      </div>
+
+      </br>
+
+
+</br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Get Quote</button>
+</form>
+
+{{ end }}

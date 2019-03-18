@@ -10,16 +10,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/learnToCrypto/lakoposlati/internal/user"
+	"github.com/learnToCrypto/lakoposlati/internal/sessions"
 )
 
 // Convenience function to redirect to the error message page
 
 // Checks if the user is logged in and has a session, if not err is not nil
-func session(writer http.ResponseWriter, request *http.Request) (sess user.Session, err error) {
+func session(writer http.ResponseWriter, request *http.Request) (sess sessions.Session, err error) {
 	cookie, err := request.Cookie("_cookie")
+	fmt.Println("cookie: ", cookie)
 	if err == nil {
-		sess = user.Session{Uuid: cookie.Value}
+		sess = sessions.Session{Uuid: cookie.Value}
 		if ok, _ := sess.Check(); !ok {
 			err = errors.New("Invalid session")
 		}

@@ -1,21 +1,26 @@
 {{ define "layout/base" }}
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=9">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Required meta tags -->
+ <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+ <!-- Bootstrap CSS -->
+ <!--
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Lako Poslati</title>
+     -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+
 
     <style>
     /* Style The Dropdown Button */
     .dropbtn {
       background-color: #1e90ff;
       color: white;
-      padding: 16px;
+      padding: 14px;
       font-size: 12px;
       border: none;
       cursor: pointer;
@@ -234,33 +239,6 @@
 
     }
 
-    #idx-atf {
-        /* layout */
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* background */
-        /* background-color: #5b5b5b; */
-        background-image: url("../assets/img/background-photo-mobile-devices.jpg");
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-        /*background-origin: border-box;*/
-        background-attachment: fixed;
-        /* formatting */
-      }
-
-    #idx-atf > div {
-        height: 85vh;
-    }
-
-    .idx-center-center {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
 
       .center {
         text-align: center;
@@ -289,19 +267,30 @@
       .pagination a:hover:not(.active) {background-color: #ddd;}
 
 
+      .moj-image {
+        background-image: url('static/img/ship.png');
+        padding-left: 11em;
+        height: 400px;
+        padding-right: 11em;
+        background-repeat: no-repeat;
+        background-position: center; /* Center the image */
+        font-family: Georgia, "Times New Roman",Times, serif;
+      }
+
+
   </style>
   </head>
   <body>
 
+
     {{ template "navbar" . }}
+  
 
-<section id="idx-atf">
+
     <div class="container">
-
       {{ template "content" . }}
-
     </div> <!-- /container -->
-</section>
+
 
 
 <footer class="footer-distributed">
