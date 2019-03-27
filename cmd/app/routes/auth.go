@@ -52,6 +52,47 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 	http.Redirect(writer, request, "/login", 302)
 }
 
+/*
+// TOdo how to save licence on server (not in database)
+func SignupAccountProvider(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		logger.Danger(err, "Cannot parse form")
+	}
+
+	file, header, err := request.FormFile("file")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	name := strings.Split(header.Filename, ".")
+	fmt.Printf("File name %s\n", name[0])
+	// Copy the file data to my buffer
+	io.Copy(&Buf, file)
+	// do something with the contents...
+	// I normally have a struct defined and unmarshal into a struct, but this will
+	// work as an example
+	contents := Buf.String()
+	fmt.Println(contents)
+	// I reset the buffer in case I want to use it again
+	// reduces memory allocations in more intense projects
+	Buf.Reset()
+
+	user := user.User{
+		FirstName: request.PostFormValue("first_name"),
+		LastName:  request.PostFormValue("last_name"),
+		Name:      request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
+		Email:     request.PostFormValue("email"),
+		Password:  request.PostFormValue("password"),
+	}
+	if err := user.Create(); err != nil {
+		logger.Danger(err, "Cannot create user")
+	}
+	http.Redirect(writer, request, "/login", 302)
+}
+
+*/
+
 // POST /authenticate
 // Authenticate the user given the email and password
 func Authenticate(writer http.ResponseWriter, request *http.Request) {
@@ -70,7 +111,7 @@ func Authenticate(writer http.ResponseWriter, request *http.Request) {
 			Value:    sess.Uuid,
 			HttpOnly: true,
 			Path:     "/",
-			MaxAge:   120, // in sec    3600 * 8   is 8 hours
+			MaxAge:   3600 * 8, // in sec    3600 * 8   is 8 hours
 		}
 		http.SetCookie(writer, &cookie)
 		//fmt.Println(user, "is logged in")

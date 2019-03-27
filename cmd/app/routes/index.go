@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/learnToCrypto/lakoposlati/internal/user"
@@ -9,7 +8,7 @@ import (
 
 func Index(writer http.ResponseWriter, request *http.Request) {
 	sess, err := session(writer, request)
-	fmt.Println("Session in index:", sess)
+	//fmt.Println("Session in index:", sess)
 	if err != nil {
 		generateHTML(writer, nil, "layout/base", "public/navbar", "index")
 	} else {

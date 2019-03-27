@@ -71,9 +71,6 @@ func (demand *Demand) NumReplies() (count int) {
 
 // Get all demands in the database and returns it
 func Demands(limit int, offset int) (demands []Demand, err error) {
-	//var stm string
-	//stm =
-	//	fmt.Println(stm)
 	rows, err := postgres.Db.Query("SELECT id, uuid, object, collection, delivery, timeframe, user_id, created_at, status FROM demands ORDER BY created_at DESC LIMIT " + strconv.Itoa(limit) + "OFFSET " + strconv.Itoa(offset))
 	if err != nil {
 		return
@@ -109,4 +106,35 @@ func DemandByUUID(uuid string) (conv Demand, err error) {
 	err = postgres.Db.QueryRow("SELECT id, uuid, object, collection, delivery, timeframe, user_id, created_at, status FROM demands WHERE uuid = $1", uuid).
 		Scan(&conv.Id, &conv.Uuid, &conv.Object, &conv.Collection, &conv.Delivery, &conv.Timeframe, &conv.UserId, &conv.CreatedAt, &conv.Status)
 	return
+}
+
+// Get a demand by the UUID
+func DemandsByUserId(userId string, limit int, offset int) (demands []Demand, err error) {
+	rows, err := postgres.Db.Query("SELECT id, uuid, object, collection, delivery, timeframe, user_id, created_at, status FROM demands WHERE user_id = $1 ORDER BY created_at DESC LIMIT "+strconv.Itoa(limit)+"OFFSET "+strconv.Itoa(offset), userId)
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		conv := Demand{}
+		if err = rows.Scan(&conv.Id, &conv.Uuid, &conv.Object, &conv.Collection, &conv.Delivery, &conv.Timeframe, &conv.UserId, &conv.CreatedAt, &conv.Status); err != nil {
+			return
+		}
+		demands = append(demands, conv)
+	}
+	rows.Close()
+	return
+}
+
+func DemandsNumUser(userId string) (count int, err error) {
+	rows, err := postgres.Db.Query("SELECT count(*) FROM demands WHERE user_id = $1", userId)
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		if err = rows.Scan(&count); err != nil {
+			return
+		}
+	}
+	rows.Close()
+	return count, err
 }

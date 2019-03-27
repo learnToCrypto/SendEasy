@@ -18,7 +18,7 @@ import (
 // Checks if the user is logged in and has a session, if not err is not nil
 func session(writer http.ResponseWriter, request *http.Request) (sess sessions.Session, err error) {
 	cookie, err := request.Cookie("_cookie")
-	fmt.Println("cookie: ", cookie)
+	//fmt.Println("cookie: ", cookie)
 	if err == nil {
 		sess = sessions.Session{Uuid: cookie.Value}
 		if ok, _ := sess.Check(); !ok {

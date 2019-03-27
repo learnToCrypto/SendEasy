@@ -57,8 +57,8 @@ func CreateDemand1(writer http.ResponseWriter, request *http.Request) {
 	//fmt.Println("delivery: ", delivery)
 
 	sess, err := session(writer, request)
-	fmt.Println("session in demand/create/1: ", sess)
-	fmt.Println("err in demand/create/1: ", err)
+	//fmt.Println("session in demand/create/1: ", sess)
+	//	fmt.Println("err in demand/create/1: ", err)
 	if err != nil {
 		fmt.Println("public")
 		d := struct {
@@ -160,7 +160,7 @@ func CreateDemandPub(writer http.ResponseWriter, request *http.Request) {
 		Value:    sess.Uuid,
 		HttpOnly: true,
 		Path:     "/",
-		MaxAge:   120,
+		MaxAge:   3600 * 8,
 	}
 	http.SetCookie(writer, &cookie)
 
@@ -180,9 +180,9 @@ func CreateDemandPub(writer http.ResponseWriter, request *http.Request) {
 	} else if _, err := demands.CreateDemand(&userI, object, collection, delivery, timeframe, status); err != nil {
 		logger.Danger(err, "Cannot create demand")
 	}
-	sess1, err1 := session(writer, request)
-	fmt.Println("session in public route: ", sess1)
-	fmt.Println("err in public route: ", err1)
+	//sess1, err1 := session(writer, request)
+	//fmt.Println("session in public route: ", sess1)
+	//fmt.Println("err in public route: ", err1)
 
 	http.Redirect(writer, request, "/demand/list/1", 302) // change /1 with proper pagination, last demands first
 }

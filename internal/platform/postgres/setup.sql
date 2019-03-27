@@ -40,6 +40,28 @@ create table users (
   updated_at timestamp
 );
 
+CREATE TABLE images (
+  imgname text,
+  img bytea
+);
+
+create table providers (
+  id            serial primary key,
+  uuid          varchar(64) not null unique,
+  provider_id   integer references users(id),
+  mobile_phone  varchar(255),
+	username      varchar(255),
+  company_addr  varchar(255),
+  company_city  varchar(255),
+  company_zip   varchar(64),
+  company_country varchar(255),
+  company_name  varchar(255),
+	equipment     text,
+  eligible_items text,
+	operating_countries text,
+	licence bytea
+);
+
 create table sessions (
   id         serial primary key,
   uuid       varchar(64) not null unique,
@@ -73,6 +95,22 @@ create table demands (
   delivery   text,
   timeframe  text,
   user_id    integer references users(id),
+  created_at timestamp not null,
+  status     integer
+);
+
+create table bids (
+  id         serial primary key,
+  uuid       varchar(64) not null unique,
+  starting_bid numeric CHECK (price > 0),
+  currency text,
+  provider_id    integer references providers(id),
+  demand_id  integer references demands(id),
+  pick_up_time text,
+  drop_off_time text,
+  quote_expiration text,
+  note text,
+  payment text,
   created_at timestamp not null,
   status     integer
 );

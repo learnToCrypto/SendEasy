@@ -9,10 +9,11 @@ import (
 	"github.com/learnToCrypto/lakoposlati/internal/user"
 )
 
-type Inbox struct {
+/*type Inbox struct {
 	Owner    user.User
 	Messages []messages.Message
 }
+*/
 
 // get messages to a demand
 func Messages(demand *demands.Demand) (msgs []messages.Message, err error) {
@@ -27,6 +28,26 @@ func Messages(demand *demands.Demand) (msgs []messages.Message, err error) {
 			return
 		}
 		msgs = append(msgs, msg)
+	}
+	rows.Close()
+	return
+}
+
+// get messages from a user
+func Inbox(user *user.User) (msgs []messages.Message, err error) {
+	fmt.Println(user.Id)
+	rows, err := postgres.Db.Query("SELECT id, uuid, body, user_id, demand_id, created_at FROM messages where user_id = $1", user.Id)
+	//fmt.Println(rows, "err = ", err)
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		msg := messages.Message{}
+		if err = rows.Scan(&msg.Id, &msg.Uuid, &msg.Body, &msg.UserId, &msg.DemandId, &msg.CreatedAt); err != nil {
+			return
+		}
+		msgs = append(msgs, msg)
+		fmt.Println(msgs)
 	}
 	rows.Close()
 	return

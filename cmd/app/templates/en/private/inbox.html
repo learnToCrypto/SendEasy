@@ -1,0 +1,37 @@
+{{ define "content" }}
+<p class="lead">
+  My Messages
+</p>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="lead"> <i class="fa fa-comment-o"></i> List of messages</span>
+  </div>
+
+{{ range .Messages }}
+<div class="panel-body">
+  <span class="lead"> <i class="fa fa-comment"></i> {{ .Body }}</span>
+  <div class="pull-right">
+    {{ .User.Name }} - {{ .CreatedAtDate }}
+  </div>
+</div>
+{{ end }}
+</div>
+
+<div class="center">
+        <div class="pagination">
+          <li>
+          <a href="1">First </a>
+          </li>
+          {{range $val := .Paginator.PageLink}}
+          <li>
+            <a {{if eq $val $.Paginator.Current}} class="active" {{end}}  href="{{$val}}">{{$val}}</a>
+          </li>
+          {{end}}
+          <li>
+          <a href="{{.Paginator.PageNum}}"> Last</a>
+          </li>
+        </div>
+</div>
+
+{{ end }}

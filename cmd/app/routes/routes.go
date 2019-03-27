@@ -19,6 +19,8 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 
 	// index
 	mux.HandleFunc("/", Index)
+	//home when logged in
+	mux.HandleFunc("/home", Index)
 	// defined in route_qoute.go
 	mux.HandleFunc("/demand/new", NewDemand)
 	mux.HandleFunc("/demand/create/1", CreateDemand1)
@@ -35,7 +37,7 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	// error
 	mux.HandleFunc("/err", Err)
 
-	// defined in route_auth.go
+	// defined in auth.go
 	mux.HandleFunc("/login", Login)
 	mux.HandleFunc("/logout", Logout)
 	mux.HandleFunc("/join", SignupChoice)
@@ -43,11 +45,14 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	mux.HandleFunc("/signup_account", SignupAccount)
 	mux.HandleFunc("/authenticate", Authenticate)
 
-	// defined in route_thread.go
+	// defined in threads.go
 	mux.HandleFunc("/thread/new", NewThread)
 	mux.HandleFunc("/thread/create", CreateThread)
 	mux.HandleFunc("/thread/post", PostThread)
 	mux.HandleFunc("/thread/read", ReadThread)
 
+	//
+	mux.HandleFunc("/myshipments", MyShipments)
+	mux.HandleFunc("/inbox", Inbox)
 	return mux
 }
