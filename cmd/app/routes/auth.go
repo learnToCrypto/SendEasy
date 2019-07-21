@@ -6,6 +6,7 @@ import (
 
 	"github.com/learnToCrypto/lakoposlati/internal/logger"
 	"github.com/learnToCrypto/lakoposlati/internal/platform/postgres"
+	"github.com/learnToCrypto/lakoposlati/internal/provider"
 	"github.com/learnToCrypto/lakoposlati/internal/sessions"
 	"github.com/learnToCrypto/lakoposlati/internal/user"
 )
@@ -18,18 +19,18 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 
 // GET /signup
 // Show the signup page
-func Signup(writer http.ResponseWriter, request *http.Request) {
-	if request.PostFormValue("user-type") == "customer" {
-		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/customer")
-	} else {
-		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/provider")
-	}
+func SignupChoice(writer http.ResponseWriter, request *http.Request) {
+	generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/choice")
 }
 
 // GET /signup
 // Show the signup page
-func SignupChoice(writer http.ResponseWriter, request *http.Request) {
-	generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/choice")
+func Signup(writer http.ResponseWriter, request *http.Request) {
+	if request.PostFormValue("user-type") == "customer" {
+		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/customer")
+	} else if request.PostFormValue("user-type") == "provider" {
+		generateHTML(writer, nil, "layout/login.base", "public/navbar", "signup/provider")
+	}
 }
 
 // POST /signup
@@ -42,9 +43,10 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 	user := user.User{
 		FirstName: request.PostFormValue("first_name"),
 		LastName:  request.PostFormValue("last_name"),
-		Name:      request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
+		Username:  request.PostFormValue("username"),
 		Email:     request.PostFormValue("email"),
 		Password:  request.PostFormValue("password"),
+		Role:      "user",
 	}
 	if err := user.Create(); err != nil {
 		logger.Danger(err, "Cannot create user")
@@ -52,14 +54,50 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 	http.Redirect(writer, request, "/login", 302)
 }
 
-/*
 // TOdo how to save licence on server (not in database)
-func SignupAccountProvider(writer http.ResponseWriter, request *http.Request) {
+func SignupProvider(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
 		logger.Danger(err, "Cannot parse form")
 	}
 
+	userI := user.User{
+		FirstName: request.PostFormValue("first_name"),
+		LastName:  request.PostFormValue("last_name"),
+		Username:  request.PostFormValue("username"),
+		Email:     request.PostFormValue("email"),
+		Password:  request.PostFormValue("password"),
+		Role:      "provider",
+	}
+
+	if err := userI.Create(); err != nil {
+		logger.Danger(err, "Cannot create user")
+	}
+
+	//get User ID
+	userI, err = user.UserByEmail(userI.Email)
+	//fmt.Println("user created", userI)
+
+	providerI := provider.Provider{
+		UserId:         userI.Id,
+		MobilePhone:    request.PostFormValue("mobile_phone"),
+		CompanyName:    request.PostFormValue("company_name"),
+		CompanyAddr:    request.PostFormValue("company_addr"),
+		CompanyCity:    request.PostFormValue("company_city"),
+		CompanyZip:     request.PostFormValue("company_zip"),
+		CompanyCountry: request.PostFormValue("company_country"),
+	}
+
+	fmt.Println("provider present,but not created", providerI)
+
+	if err := providerI.Create(); err != nil {
+		logger.Danger(err, "Cannot create provider")
+	}
+	http.Redirect(writer, request, "/login", 302)
+
+}
+
+/*
 	file, header, err := request.FormFile("file")
 	if err != nil {
 		panic(err)
@@ -77,19 +115,6 @@ func SignupAccountProvider(writer http.ResponseWriter, request *http.Request) {
 	// I reset the buffer in case I want to use it again
 	// reduces memory allocations in more intense projects
 	Buf.Reset()
-
-	user := user.User{
-		FirstName: request.PostFormValue("first_name"),
-		LastName:  request.PostFormValue("last_name"),
-		Name:      request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
-		Email:     request.PostFormValue("email"),
-		Password:  request.PostFormValue("password"),
-	}
-	if err := user.Create(); err != nil {
-		logger.Danger(err, "Cannot create user")
-	}
-	http.Redirect(writer, request, "/login", 302)
-}
 
 */
 

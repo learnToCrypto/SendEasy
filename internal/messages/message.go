@@ -33,8 +33,8 @@ func CreateMessage(user *user.User, conv demands.Demand, body string) (msg Messa
 // Get the user who wrote the message
 func (msg *Message) User() (userI user.User) {
 	userI = user.User{}
-	postgres.Db.QueryRow("SELECT id, uuid, name, email, created_at FROM users WHERE id = $1", msg.UserId).
-		Scan(&userI.Id, &userI.Uuid, &userI.Name, &userI.Email, &userI.CreatedAt)
+	postgres.Db.QueryRow("SELECT id, uuid, username, email, created_at FROM users WHERE id = $1", msg.UserId).
+		Scan(&userI.Id, &userI.Uuid, &userI.Username, &userI.Email, &userI.CreatedAt)
 	return
 }
 

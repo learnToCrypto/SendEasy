@@ -44,8 +44,8 @@ func CreateDemand(user *user.User, object, collection, delivery, timeframe strin
 // Get the user who made the demand
 func (demand *Demand) User() (userI user.User) {
 	userI = user.User{}
-	postgres.Db.QueryRow("SELECT id, uuid, name, email, created_at FROM users WHERE id = $1", demand.UserId).
-		Scan(&userI.Id, &userI.Uuid, &userI.Name, &userI.Email, &userI.CreatedAt)
+	postgres.Db.QueryRow("SELECT id, uuid, username, email, created_at FROM users WHERE id = $1", demand.UserId).
+		Scan(&userI.Id, &userI.Uuid, &userI.Username, &userI.Email, &userI.CreatedAt)
 	return
 }
 

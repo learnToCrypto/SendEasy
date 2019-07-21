@@ -140,7 +140,7 @@ func CreateDemandPub(writer http.ResponseWriter, request *http.Request) {
 	userI := user.User{
 		FirstName: request.PostFormValue("first_name"),
 		LastName:  request.PostFormValue("last_name"),
-		Name:      request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
+		Username:  request.PostFormValue("first_name") + " " + request.PostFormValue("last_name"),
 		Email:     request.PostFormValue("email"),
 		Password:  request.PostFormValue("password"),
 	}

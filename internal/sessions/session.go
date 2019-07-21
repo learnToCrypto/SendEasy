@@ -69,8 +69,8 @@ func (session *Session) DeleteByUUID() (err error) {
 // Get the user from the session
 func (session *Session) User() (userI user.User, err error) {
 	userI = user.User{}
-	err = postgres.Db.QueryRow("SELECT id, uuid, name, email, created_at FROM users WHERE id = $1", session.UserId).
-		Scan(&userI.Id, &userI.Uuid, &userI.Name, &userI.Email, &userI.CreatedAt)
+	err = postgres.Db.QueryRow("SELECT id, uuid, username, email, created_at FROM users WHERE id = $1", session.UserId).
+		Scan(&userI.Id, &userI.Uuid, &userI.Username, &userI.Email, &userI.CreatedAt)
 	return
 }
 

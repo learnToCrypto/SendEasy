@@ -43,6 +43,7 @@ func API(log *log.Logger, conf config.Configuration) http.Handler {
 	mux.HandleFunc("/join", SignupChoice)
 	mux.HandleFunc("/signup", Signup)
 	mux.HandleFunc("/signup_account", SignupAccount)
+	mux.HandleFunc("/signup_provider", SignupProvider)
 	mux.HandleFunc("/authenticate", Authenticate)
 
 	// defined in threads.go

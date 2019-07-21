@@ -67,16 +67,16 @@ func (thread *Thread) Posts() (posts []Post, err error) {
 // Get the user who started this thread
 func (thread *Thread) User() (user User) {
 	user = User{}
-	postgres.Db.QueryRow("SELECT id, uuid, name, email, created_at FROM users WHERE id = $1", thread.UserId).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.CreatedAt)
+	postgres.Db.QueryRow("SELECT id, uuid, username, email, created_at FROM users WHERE id = $1", thread.UserId).
+		Scan(&user.Id, &user.Uuid, &user.Username, &user.Email, &user.CreatedAt)
 	return
 }
 
 // Get the user who wrote the post
 func (post *Post) User() (user User) {
 	user = User{}
-	postgres.Db.QueryRow("SELECT id, uuid, name, email, created_at FROM users WHERE id = $1", post.UserId).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.CreatedAt)
+	postgres.Db.QueryRow("SELECT id, uuid, username, email, created_at FROM users WHERE id = $1", post.UserId).
+		Scan(&user.Id, &user.Uuid, &user.Username, &user.Email, &user.CreatedAt)
 	return
 }
 

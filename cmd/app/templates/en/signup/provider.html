@@ -1,18 +1,31 @@
 {{ define "content" }}
 
-<form class="form-signin" role="form" action="/signup_account" method="post">
+<form class="form-signin" role="form" action="/signup_provider" method="post">
   <h2 class="form-signin-heading">
     <i class="fa fa-comments-o">
       Lako Poslati
     </i>
   </h2>
-  <div class="lead">Sign up for an account below</div>
-  <input id="name" type="text" name="name" class="form-control" placeholder="Name" required autofocus>
-  <input type="email" name="email" class="form-control" placeholder="Email address" required>
-  <input type="password" name="password" class="form-control" placeholder="Password" required>
-  <input type="text" name="company-name" class="form-control" placeholder="Company name" required>
+  <div class="lead">Sign up for a provider account below</div>
+
+  <div class="lead">Bussines information</div>
+  <input type="text" name="company_name" class="form-control" placeholder="Company Name" required autofocus>
+  <input type="text" name="company_addr" class="form-control" placeholder="Company Address" required>
+  <input type="text" name="company_city" class="form-control" placeholder="City" required>
+  <input type="text" name="company_zip"  class="form-control" placeholder="PostCode" required>
+  <input type="text" name="company_country" class="form-control" placeholder="Country" required>
+  <input type="text" name="mobile_phone" class="form-control" placeholder="Mobile Phone" required>
+
   <br>
+
+  <div class="lead">Personal Details</div>
+  <input id="name" type="text" name="first_name" class="form-control" placeholder="First Name" required autofocus>
+  <input id="name" type="text" name="last_name" class="form-control" placeholder="Last Name" required autofocus>
+  <input type="email" name="email" class="form-control" placeholder="Email address" required>
+  <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+  <p> <input type="checkbox" required name="terms"> I agree to the terms of Lako Poslati <a href="/about">User Agreement</a> and <a href="/about">Privacy Policy</a>.<br>
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
 </form>
+
 
 {{ end }}

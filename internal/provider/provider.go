@@ -1,21 +1,16 @@
 package provider
 
 import (
-	"time"
-
 	"github.com/learnToCrypto/lakoposlati/internal/platform/postgres"
 )
 
 //Provider respresents a registered user with email/password authentication  (see netlify/gotrue)
 type Provider struct {
-	Id   int    `json:"id" db:"id"`
-	Uuid string `json:"Uuid" db:"uuid"`
+	Id     int    `json:"id" db:"id"`
+	Uuid   string `json:"uuid" db:"uuid"`
+	UserId int    `json:"user_id" db:"user_id"`
 
-	Name        string `json:"last_name" db:"last_name"`
-	FirstName   string `json:"first_name" db:"first_name"`
-	LastName    string `json:"last_name" db:"last_name"`
 	MobilePhone string `json:"mobile_phone" db:"mobile_phone"`
-	//NickName          string          username
 
 	CompanyName    string `json:"company_name" db:"company_name"`
 	CompanyAddr    string `json:"company_addr" db:"company_addr"`
@@ -29,37 +24,6 @@ type Provider struct {
 	OperatingCountries []string
 
 	//	Licence
-
-	Aud  string `json:"aud" db:"aud"`
-	Role string `json:"role" db:"role"`
-
-	Email       string     `json:"email" db:"email"`
-	Password    string     `json:"-" db:"encrypted_password"`
-	ConfirmedAt *time.Time `json:"confirmed_at,omitempty" db:"confirmed_at"`
-	InvitedAt   *time.Time `json:"invited_at,omitempty" db:"invited_at"`
-
-	ConfirmationToken  string     `json:"-" db:"confirmation_token"`
-	ConfirmationSentAt *time.Time `json:"confirmation_sent_at,omitempty" db:"confirmation_sent_at"`
-
-	RecoveryToken  string     `json:"-" db:"recovery_token"`
-	RecoverySentAt *time.Time `json:"recovery_sent_at,omitempty" db:"recovery_sent_at"`
-
-	EmailChangeToken  string     `json:"-" db:"email_change_token"`
-	EmailChange       string     `json:"new_email,omitempty" db:"email_change"`
-	EmailChangeSentAt *time.Time `json:"email_change_sent_at,omitempty" db:"email_change_sent_at"`
-
-	LastSignInAt *time.Time `json:"last_sign_in_at,omitempty" db:"last_sign_in_at"`
-
-	//used to store information (e.g., a user's support plan, security roles, or access control groups)
-	//that can impact a user's core functionality, such as how an application functions or what the user can access.
-	AppMetaData map[string]interface{} `json:"app_metadata" db:"raw_app_meta_data"`
-	//UserMetaData (RawData) used to store user attributes (e.g., user preferences) that do not impact a user's core functionality;
-	UserMetaData map[string]interface{} `json:"user_metadata" db:"raw_user_meta_data"`
-
-	IsAdmin bool `json:"-" db:"is_super_admin"`
-
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Create a new user, save user info into the database
@@ -67,21 +31,10 @@ func (provider *Provider) Create() (err error) {
 	// Postgres does not automatically return the last insert id, because it would be wrong to assume
 	// you're always using a sequence.You need to use the RETURNING keyword in your insert to get this
 	// information from postgres.
-	statement := "insert into users (uuid, first_name, last_name, name, email, password, created_at) values ($1, $2, $3, $4, $5, $6, $7) returning id, uuid, created_at"
-	stmt, err := postgres.Db.Prepare(statement)
-	if err != nil {
-		return
-	}
-	defer stmt.Close()
-
-	// use QueryRow to return a row and scan the returned id into the User struct
-	err = stmt.QueryRow(postgres.CreateUUID(), provider.FirstName, provider.LastName, provider.Name, provider.Email, postgres.Encrypt(provider.Password), time.Now().UTC()).Scan(&provider.Id, &provider.Uuid, &provider.CreatedAt)
-
-	//insert image into
 
 	//	username      varchar(255),
 	//	 licence bytea
-	statement1 := "insert into providers (uuid, provider_id, mobile_phone, company_name, company_addr, company_city, company_zip, company_country, equipment, eligible_items, operating_countries ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id, uuid, created_at"
+	statement1 := "insert into providers (uuid, user_id, mobile_phone, company_name, company_addr, company_city, company_zip, company_country) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, uuid"
 	stmt1, err := postgres.Db.Prepare(statement1)
 	if err != nil {
 		return
@@ -89,7 +42,7 @@ func (provider *Provider) Create() (err error) {
 	defer stmt1.Close()
 
 	// use QueryRow to return a row and scan the returned id into the User struct
-	err = stmt1.QueryRow(postgres.CreateUUID(), provider.Id, provider.MobilePhone, provider.CompanyName, provider.CompanyAddr, provider.CompanyCity, provider.CompanyZip, provider.CompanyCountry, provider.Equipment, provider.EligibleItems, provider.OperatingCountries).Scan(&provider.Uuid, &provider.Id, &provider.MobilePhone, &provider.CompanyName, &provider.CompanyAddr, &provider.CompanyCity, &provider.CompanyZip, &provider.CompanyCountry, &provider.Equipment, &provider.EligibleItems, &provider.OperatingCountries)
+	err = stmt1.QueryRow(postgres.CreateUUID(), provider.UserId, provider.MobilePhone, provider.CompanyName, provider.CompanyAddr, provider.CompanyCity, provider.CompanyZip, provider.CompanyCountry).Scan(&provider.Id, &provider.Uuid)
 	return
 }
 
