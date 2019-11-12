@@ -1,4 +1,5 @@
 # Lako Poslati
 
-This is the simple application written with Go made staring from the source code explained in "Go Web Programming" book from Manning Publication Co.
+This is the simple application written with Go that allows bidding for a posted job offer. In LakoPoslati, we store
+the data in a relational database (PostgreSQL) and use SQL to interact with the database.
 
